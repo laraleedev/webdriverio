@@ -605,7 +605,7 @@ declare namespace WebdriverIO {
     type AddCommandFn<IsElement extends boolean = false> = (this: IsElement extends true ? Element : BrowserObject, ...args: any[]) => any
     type OverwriteCommandFn<ElementKey extends keyof Element, BrowserKey extends keyof BrowserObject, IsElement extends boolean = false> = (this: IsElement extends true ? Element : BrowserObject, origCommand: IsElement extends true ? Element[ElementKey] : BrowserObject[BrowserKey], ...args: any[]) => any
 
-    interface Element {
+    interface Element extends BrowserObject {
         selector: string;
         elementId: string;
 
@@ -631,13 +631,18 @@ declare namespace WebdriverIO {
         parent: Element | WebdriverIO.BrowserObject;
 
         /**
+         * true if element is a React component
+         */
+        isReactElement?: boolean
+
+        /**
          * add command to `element` scope
          */
         addCommand(
             name: string,
             func: AddCommandFn<false>
         ): void;
-        
+
         /**
          * The `$$` command is a short way to call the [`findElements`](/docs/api/webdriver.html#findelements) command in order
          * to fetch multiple elements on the page similar to the `$$` command from the browser scope. The difference when calling
@@ -1008,7 +1013,7 @@ declare namespace WebdriverIO {
          */
         calls: Matches[];
 
-        
+
         /**
          * Abort the request with one of the following error codes:
          * `Failed`, `Aborted`, `TimedOut`, `AccessDenied`, `ConnectionClosed`,
@@ -1103,7 +1108,7 @@ declare namespace WebdriverIO {
             name: string,
             func: (elementFetchingMethod: (selector: string) => any) => void
         ): void
-        
+
         /**
          * The `$$` command is a short way to call the [`findElements`](/docs/api/webdriver.html#findelements) command in order
          * to fetch multiple elements on the page. It returns an array with element results that will have an
@@ -1359,7 +1364,7 @@ declare namespace WebdriverIO {
     }
 
     type MultiRemoteBrowserReference = Record<string, BrowserObject>
-    
+
     interface MultiRemoteBrowser extends Browser {
         /**
          * multiremote browser instance names
@@ -1370,7 +1375,7 @@ declare namespace WebdriverIO {
          */
         isMultiremote: true;
     }
-    
+
     type MultiRemoteBrowserObject = MultiRemoteBrowser & MultiRemoteBrowserReference
 
     interface Config extends Options, Omit<WebDriver.Options, "capabilities">, Hooks {
